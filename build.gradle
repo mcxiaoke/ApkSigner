@@ -11,3 +11,28 @@ repositories {
 dependencies {
     testCompile 'junit:junit:4.12'
 }
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java', 'src/apksigner/java']
+        }
+
+        resources {
+            srcDirs =  ['src/main/java', 'src/apksigner/java']
+            includes = [ "**/*.txt" ]
+        }
+    }
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'ApkSigner Executable Jar',
+                'Implementation-Version': "1.0.0",
+                'Main-Class': 'com.android.apksigner.ApkSignerTool',
+                'Description': 'This is ApkSigner executable Jar.'
+    }
+    baseName = 'apksigner'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
